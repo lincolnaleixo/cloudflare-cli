@@ -18,7 +18,7 @@ describe("Cloudflare CLI safety boundary", () => {
     );
     expect(() => assertAllowedFlags("purchase", {})).toThrow("unknown command");
     expect(usage()).not.toContain("registrar");
-    expect(usage()).not.toContain("/opt/zero");
+    expect(usage()).not.toContain("/private/path");
   });
 
   test("requires explicit CLI confirmation before a set reaches the client", () => {

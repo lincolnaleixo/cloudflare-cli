@@ -91,7 +91,7 @@ function requireConfirmation(flags: Record<string, FlagValue>, action: string): 
 export function usage(): string {
   return `Cloudflare DNS management (domain purchases are not supported here)
 
-Usage: /home/robot/.local/bin/system-vault run cloudflare -- bun <skill-directory>/scripts/cli.ts <command> [args]
+Usage: cloudflare-cli <command> [args]
 
 Commands:
   zones                              List all zones/domains
@@ -102,7 +102,7 @@ Commands:
   delete <zone> <record-id>          Delete a DNS record
   help                               Show this help
 
-Mutating commands require --confirm in addition to Lincoln's explicit approval.
+Mutating commands require --confirm in addition to your explicit approval.
 Use --proxied or --dns-only with set; omit both to use Cloudflare's default.`;
 }
 

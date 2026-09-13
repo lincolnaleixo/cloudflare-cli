@@ -24,7 +24,7 @@ function loadConfig(): CloudflareConfig {
 
   if (!config.apiToken && !config.globalApiKey) {
     throw new Error(
-      "Cloudflare credentials not found. Run through `/home/robot/.local/bin/system-vault run cloudflare --`.",
+      "Cloudflare credentials not found. Set the required environment variables or inject them with your secret manager.",
     );
   }
 
