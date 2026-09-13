@@ -10,6 +10,5 @@
     "target": "ESNext",
     "types": ["bun"]
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src"]
 }
-

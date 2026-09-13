@@ -1,78 +1,93 @@
 # cloudflare-cli
 
-Cloudflare DNS CLI and API client
+`cloudflare-cli` is a small Bun/TypeScript command-line tool for inspecting
+Cloudflare zones and managing their DNS records. It also exposes the API client
+modules in `src/` for projects that import the source directly.
 
-## Install
+## Installation
 
-## Use
-
-## License
-
-MIT.
-# cloudflare-cli
-
-A small Bun/TypeScript CLI and importable client for inspecting and changing Cloudflare zones and DNS records.
-
-## Install
-
-Install [Bun](https://bun.sh), clone this repository, and install dependencies:
+Install [Bun](https://bun.sh), clone or download this project, and install its
+development dependencies:
 
 ```bash
 bun install
 ```
 
-The standalone executable is `./bin/cloudflare-cli`; it resolves its own location, so it can be invoked from any directory. For a global command, link or copy that executable into a directory on your `PATH`.
+The standalone launcher is `bin/cloudflare-cli`. It finds the project root from
+its own location, so it can be run from any working directory. To make it
+available globally, place it in a directory on `PATH` or create a symlink there.
 
 ## Authentication and environment variables
 
-Credentials are read only from environment variables. Inject them with your organization's secret manager (for example, `secrets run <profile> -- ./bin/cloudflare-cli zones`) or export them in the process environment. Never commit a `.env` file or put secret values in command arguments.
+The CLI reads credentials from environment variables. Supply them through your
+organization's secret manager or the process environment; do not put secrets in
+arguments, committed files, or logs.
 
-- `CLOUDFLARE_API_TOKEN`: scoped API token. This is the preferred authentication method.
-- `CLOUDFLARE_GLOBAL_API_KEY`: optional user-level Global API Key, used instead of the API token when broader DNS permissions are required.
-- `CLOUDFLARE_EMAIL`: email for the Global API Key; it must be provided together with `CLOUDFLARE_GLOBAL_API_KEY`.
-- `CLOUDFLARE_ACCOUNT_ID`: optional account identifier retained for account-scoped API use; the current zone/DNS commands do not require it.
+- `CLOUDFLARE_API_TOKEN` — preferred scoped API token.
+- `CLOUDFLARE_GLOBAL_API_KEY` — optional user-level Global API Key. When set,
+  it is used instead of the API token.
+- `CLOUDFLARE_EMAIL` — email address paired with
+  `CLOUDFLARE_GLOBAL_API_KEY`; both variables must be set together.
+- `CLOUDFLARE_ACCOUNT_ID` — optional account identifier reserved for
+  account-scoped API operations. The current zone and DNS commands do not
+  require it.
 
-## Commands
+At least one authentication method is required: an API token, or a Global API
+Key together with its email address.
 
-Run `./bin/cloudflare-cli help` for the short built-in summary. All read commands are non-mutating; `set` and `delete` require `--confirm` as an additional safety boundary.
+## Usage
+
+```text
+cloudflare-cli <command> [arguments] [options]
+```
+
+Run `./bin/cloudflare-cli help` for a short summary. Read commands do not modify
+Cloudflare. The `set` and `delete` commands require `--confirm` in addition to
+the operator's explicit approval of the exact change.
 
 ### `zones [--json]`
 
-List all zones. `--json` prints the API result as formatted JSON.
+Lists all zones. `--json` prints formatted JSON.
 
 ### `zone <name-or-id> [--json]`
 
-Show one zone by domain name or 32-character zone ID. `--json` prints formatted JSON.
+Shows one zone selected by domain name or 32-character zone ID. `--json` prints
+formatted JSON.
 
 ### `records <zone> [--type TYPE] [--json]`
 
-List DNS records for a zone, optionally filtering by record type such as `A`, `AAAA`, `CNAME`, or `TXT`. `--json` prints formatted JSON.
+Lists DNS records for a zone. `--type` filters by record type, such as `A`,
+`AAAA`, `CNAME`, or `TXT`. `--json` prints formatted JSON.
 
 ### `get <zone> <name> [type] [--json]`
 
-Get the first matching record by zone, record name, and optional type. Names may be relative (`www`) or fully qualified; `@` refers to the zone apex. `--json` prints formatted JSON.
+Returns the first matching record for a zone, name, and optional type. A name
+may be relative (`www`) or fully qualified; `@` means the zone apex.
+`--json` prints formatted JSON.
 
 ### `set <zone> <type> <name> <content> [--proxied | --dns-only] [--json] --confirm`
 
-Create a record or update the first existing record with the same name and type. `--proxied` sets Cloudflare proxying on, while `--dns-only` sets it off; omit both to leave Cloudflare's default behavior. The two flags are mutually exclusive. `--confirm` is required.
+Creates a record, or updates the first existing record with the same name and
+type. `--proxied` enables Cloudflare proxying; `--dns-only` disables it. These
+options are mutually exclusive. If neither is supplied, the API default is
+used. `--confirm` is required.
 
 ### `delete <zone> <record-id> [--json] --confirm`
 
-Delete a DNS record by zone and record ID. `--confirm` is required. `--json` prints the deleted record ID as formatted JSON.
+Deletes a DNS record by zone and record ID. `--confirm` is required, and
+`--json` prints the deleted record ID as formatted JSON.
 
 ### `help`
 
-Print the command summary. Running the CLI without a command is equivalent to `help`.
+Prints the command summary. Running the CLI without a command also prints help.
 
 ## Check
 
-Run the full local verification suite:
+Run typechecking and the test suite with:
 
 ```bash
 bun run check
 ```
-
-This runs TypeScript typechecking followed by the Bun tests.
 
 ## License
 
